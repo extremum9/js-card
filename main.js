@@ -18,25 +18,61 @@ const getCardNetwork = (cardNumber) => {
   return 'unknown';
 };
 
-const getDigitsOnly = (value) => value.replace(/\D/g, '');
-
-const cardNumberInput = document.getElementById('cardNumber');
-
-cardNumberInput.addEventListener('input', (event) => {
-  const target = event.target;
-  const sanitizedValue = getDigitsOnly(target.value);
-  let formattedValue;
-
-  switch (getCardNetwork(sanitizedValue)) {
+const formatCardNumber = (cardNumber) => {
+  switch (getCardNetwork(cardNumber)) {
     case 'amex':
-      formattedValue = sanitizedValue.replace(/^(\d{4})/, '$1 ').replace(/^(\d{4}\s\d{6})/, '$1 ').slice(0, 17);
-      break;
+      return cardNumber.replace(/^(\d{4})/, '$1 ').replace(/^(\d{4}\s\d{6})/, '$1 ').slice(0, 17);
     case 'visa':
     case 'mastercard':
     case 'discover':
     default:
-      formattedValue = sanitizedValue.replace(/(\d{4})/g, '$1 ').slice(0, 19);
+      return cardNumber.replace(/(\d{4})/g, '$1 ').slice(0, 19);
+  }
+};
+
+const getDigitsOnly = (value) => value.replace(/\D/g, '');
+
+const cardNumberInput = document.getElementById('cardNumber');
+
+let lastValue = '';
+
+cardNumberInput.addEventListener('input', (event) => {
+  const target = event.target;
+  let { value, selectionStart: caretPosition } = target;
+
+  const deleting = value.length < lastValue.length;
+  // If the deleted character is a space, remove the preceding character
+  // and adjust the caret position.
+  if (deleting && lastValue[caretPosition] === ' ') {
+    value = value.slice(0, caretPosition - 1) + value.slice(caretPosition);
+    caretPosition--;
+  }
+
+  const sanitizedValue = getDigitsOnly(value);
+  let formattedValue = formatCardNumber(sanitizedValue);
+  if (deleting) {
+    formattedValue = formattedValue.trimEnd();
+  }
+
+  const numberOfDigitsBeforeCaret = getDigitsOnly(value.slice(0, caretPosition)).length;
+
+  let digitCount = 0;
+  for (let index = 0; index < formattedValue.length; index++) {
+    if (digitCount === numberOfDigitsBeforeCaret) {
+      caretPosition = index;
+      break;
+    }
+    if (/\d/.test(formattedValue[index])) {
+      digitCount++;
+    }
+  }
+
+  // Move the caret past the newly added space.
+  if (!deleting && formattedValue[caretPosition] === ' ') {
+    caretPosition++;
   }
 
   target.value = formattedValue;
+  lastValue = formattedValue;
+  target.setSelectionRange(caretPosition, caretPosition);
 });
