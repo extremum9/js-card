@@ -9,6 +9,10 @@ const CARD_NETWORK_PATTERNS = {
   discover: /^(6011|65|64[4-9])/
 };
 
+/**
+ * @param {string} cardNumber
+ * @returns {"visa" | "mastercard" | "amex" | "discover" | "unknown"}
+ */
 const getCardNetwork = (cardNumber) => {
   for (const network in CARD_NETWORK_PATTERNS) {
     if (CARD_NETWORK_PATTERNS[network].test(cardNumber)) {
@@ -18,6 +22,10 @@ const getCardNetwork = (cardNumber) => {
   return 'unknown';
 };
 
+/**
+ * @param {string} cardNumber
+ * @returns {string}
+ */
 const formatCardNumber = (cardNumber) => {
   switch (getCardNetwork(cardNumber)) {
     case 'amex':
@@ -30,6 +38,10 @@ const formatCardNumber = (cardNumber) => {
   }
 };
 
+/**
+ * @param {string} value
+ * @returns {string}
+ */
 const getDigitsOnly = (value) => value.replace(/\D/g, '');
 
 const cardNumberInput = document.getElementById('cardNumber');
