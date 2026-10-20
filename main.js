@@ -70,12 +70,12 @@ cardNumberInput.addEventListener('input', (event) => {
 
   let digitCount = 0;
   for (let index = 0; index < formattedValue.length; index++) {
-    if (digitCount === numberOfDigitsBeforeCaret) {
-      caretPosition = index;
-      break;
-    }
     if (/\d/.test(formattedValue[index])) {
       digitCount++;
+      if (digitCount === numberOfDigitsBeforeCaret) {
+        caretPosition = index + 1;
+        break;
+      }
     }
   }
 
