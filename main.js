@@ -10,6 +10,12 @@ const CARD_NETWORK_PATTERNS = {
 };
 
 /**
+ * @param {string} value
+ * @returns {string}
+ */
+const getDigitsOnly = (value) => value.replace(/\D/g, '');
+
+/**
  * @param {string} cardNumber
  * @returns {"visa" | "mastercard" | "amex" | "discover" | "unknown"}
  */
@@ -38,14 +44,9 @@ const formatCardNumber = (cardNumber) => {
   }
 };
 
-/**
- * @param {string} value
- * @returns {string}
- */
-const getDigitsOnly = (value) => value.replace(/\D/g, '');
+const formatCardExpirationDate = (expirationDate) => expirationDate.replace(/^(\d{2})/, '$1 / ').slice(0, 7);
 
 const cardNumberInput = document.getElementById('cardNumber');
-
 let lastValue = '';
 
 cardNumberInput.addEventListener('input', (event) => {
@@ -87,4 +88,23 @@ cardNumberInput.addEventListener('input', (event) => {
   target.value = formattedValue;
   lastValue = formattedValue;
   target.setSelectionRange(caretPosition, caretPosition);
+});
+
+const cardExpiration = document.getElementById('cardExpiration');
+let lastDateValue = '';
+
+cardExpiration.addEventListener('input', (event) => {
+  const target = event.target;
+  let { value } = target;
+
+  const deleting = value.length < lastDateValue.length;
+  if (!deleting && value.length === 1 && /[2-9]/.test(value)) {
+    value = `0${value}`;
+  }
+
+  const sanitizedValue = getDigitsOnly(value);
+  const formattedValue = formatCardExpirationDate(sanitizedValue);
+
+  target.value = formattedValue;
+  lastDateValue = formattedValue;
 });
