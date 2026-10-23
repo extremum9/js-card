@@ -95,16 +95,40 @@ let lastDateValue = '';
 
 cardExpiration.addEventListener('input', (event) => {
   const target = event.target;
-  let { value } = target;
+  let { value, selectionStart: caretPosition } = target;
 
   const deleting = value.length < lastDateValue.length;
   if (!deleting && value.length === 1 && /[2-9]/.test(value)) {
     value = `0${value}`;
+    caretPosition++;
+  }
+
+  if (deleting && !/\d/.test(lastDateValue[caretPosition])) {
+    value = value.slice(0, 1) + value.slice(caretPosition);
+    caretPosition = 1;
   }
 
   const sanitizedValue = getDigitsOnly(value);
   const formattedValue = formatCardExpirationDate(sanitizedValue);
 
+  const numberOfDigitsBeforeCaret = getDigitsOnly(value.slice(0, caretPosition)).length;
+
+  let digitCount = 0;
+  for (let index = 0; index < formattedValue.length; index++) {
+    if (/\d/.test(formattedValue[index])) {
+      digitCount++;
+      if (digitCount === numberOfDigitsBeforeCaret) {
+        caretPosition = index + 1;
+        break;
+      }
+    }
+  }
+
+  if (!deleting && formattedValue.slice(caretPosition, caretPosition + 3) === ' / ') {
+    caretPosition += 3;
+  }
+
   target.value = formattedValue;
   lastDateValue = formattedValue;
+  target.setSelectionRange(caretPosition, caretPosition);
 });
