@@ -193,6 +193,11 @@ main {
 
 .form-field {
   margin-block-end: 18px;
+  &:focus-within {
+    .form-label {
+      color: var(--text-color);
+    }
+  }
 }
 
 .form-label {
@@ -223,17 +228,24 @@ main {
     &:focus {
       box-shadow: 0 0 0 4px rgba(255, 117, 133, 0.18);
     }
+
+    & + .form-error-message {
+      margin-block-start: 6px;
+    }
   }
 }
 
 .form-error-message {
-  display: inline-flex;
+  display: flex;
   align-items: start;
   column-gap: 6px;
-  margin-block-start: 4px;
   font-size: 14px;
   line-height: 1.4;
   color: var(--error-color);
+  &:empty::before {
+    display: none;
+  }
+
   &::before {
     content: "!";
     flex-shrink: 0;

@@ -12,24 +12,24 @@
       <form class="form">
         <div class="form-field">
           <label class="form-label" for="cardNumber">Card number</label>
-          <input id="cardNumber" class="form-control" name="cardNumber" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-invalid="true" aria-describedby="cardNumberError" />
-          <p id="cardNumberError" class="form-error-message" role="alert" aria-live="polite">Your card number is incomplete.</p>
+          <input id="cardNumber" class="form-control" name="cardNumber" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-invalid="false" aria-describedby="cardNumberError" />
+          <p id="cardNumberError" class="form-error-message" aria-live="polite"></p>
         </div>
         <div class="form-field">
           <label class="form-label" for="cardName">Name on card</label>
-          <input id="cardName" class="form-control" name="cardName" type="text" autocomplete="cc-name" spellcheck="false" placeholder="John Doe" aria-invalid="true" aria-describedby="cardNameError" />
-          <p id="cardNameError" class="form-error-message" role="alert" aria-live="polite">Name is too short.</p>
+          <input id="cardName" class="form-control" name="cardName" type="text" autocomplete="cc-name" spellcheck="false" placeholder="John Doe" aria-invalid="false" aria-describedby="cardNameError" />
+          <p id="cardNameError" class="form-error-message" aria-live="polite"></p>
         </div>
         <div class="form-row">
           <div class="form-field">
             <label class="form-label" for="cardExpirationDate">Expiration date</label>
-            <input id="cardExpirationDate" class="form-control" name="cardExpirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-invalid="true" aria-describedby="cardExpirationDateError" />
-            <p id="cardExpirationDateError" class="form-error-message" role="alert" aria-live="polite">Your card has expired.</p>
+            <input id="cardExpirationDate" class="form-control" name="cardExpirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-invalid="false" aria-describedby="cardExpirationDateError" />
+            <p id="cardExpirationDateError" class="form-error-message" aria-live="polite"></p>
           </div>
           <div class="form-field">
             <label class="form-label" for="cardSecurityCode">Security code</label>
-            <input id="cardSecurityCode" class="form-control" name="cardSecurityCode" type="text" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" placeholder="CVC" aria-invalid="true" aria-describedby="cardSecurityCodeError" />
-            <p id="cardSecurityCodeError" class="form-error-message" role="alert" aria-live="polite">Your security code is incomplete.</p>
+            <input id="cardSecurityCode" class="form-control" name="cardSecurityCode" type="text" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" placeholder="CVC" aria-invalid="false" aria-describedby="cardSecurityCodeError" />
+            <p id="cardSecurityCodeError" class="form-error-message" aria-live="polite"></p>
           </div>
         </div>
         <button class="submit-button" type="submit">Submit</button>
