@@ -23,15 +23,17 @@ const countDigitsBeforeCaret = (value, caretIndex) => getDigitsOnly(value.slice(
 const getDigitsOnly = (value) => value.replace(/\D/g, '');
 
 /**
- * @param {string} cardNumber
- * @returns {"visa" | "mastercard" | "amex" | "discover" | "unknown"}
+ * @param {string} value
+ * @returns {'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown'}
  */
-const getCardNetwork = (cardNumber) => {
+const getCardNetwork = (value) => {
+  const sanitized = getDigitsOnly(value);
   for (const network in CARD_NETWORK_PATTERNS) {
-    if (CARD_NETWORK_PATTERNS[network].test(cardNumber)) {
+    if (CARD_NETWORK_PATTERNS[network].test(sanitized)) {
       return network;
     }
   }
+
   return 'unknown';
 };
 
@@ -60,11 +62,12 @@ const getCaretIndex = (formattedValue, digitsBeforeCaret) => {
 
 /**
  * @param {string} value
+ * @param {'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown'} network
  * @returns {string}
  */
-const formatCardNumber = (value) => {
+const formatCardNumber = (value, network) => {
   const sanitized = getDigitsOnly(value);
-  switch (getCardNetwork(sanitized)) {
+  switch (network) {
     case 'amex':
       return sanitized.replace(/^(\d{4})/, '$1 ').replace(/^(\d{4}\s\d{6})/, '$1 ').slice(0, 17);
     case 'visa':
@@ -81,68 +84,105 @@ const formatCardNumber = (value) => {
  */
 const formatCardExpirationDate = (value) => getDigitsOnly(value).replace(/^(\d{2})/, '$1 / ').slice(0, 7);
 
-const cardNumberInput = document.getElementById('cardNumber');
-let lastValue = '';
+/**
+ * @param {string} value
+ * @param {'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown'} network
+ * @returns {string}
+ */
+const formatCardSecurityCode = (value, network) => getDigitsOnly(value).slice(0, network === 'amex' ? 4 : 3);
 
-cardNumberInput.addEventListener('input', (event) => {
+const SELECTORS = {
+  FORM: '.js-form',
+  FORM_CONTROL: '.js-form-control',
+  CARD_NUMBER_CONTROL : '.js-card-number-control',
+  CARD_EXPIRATION_DATE_CONTROL : '.js-card-expiration-date-control',
+  CARD_SECURITY_CODE_CONTROL : '.js-card-security-code-control',
+};
+
+
+const formElement = document.querySelector(SELECTORS.FORM);
+const cardNumberControl = document.querySelector(SELECTORS.CARD_NUMBER_CONTROL);
+const cardExpirationDateControl = document.querySelector(SELECTORS.CARD_EXPIRATION_DATE_CONTROL);
+const cardSecurityCodeControl = document.querySelector(SELECTORS.CARD_SECURITY_CODE_CONTROL);
+
+const onCardNumberInput = () => {
+  let lastValue = '';
+
+  return (event) => {
+    const target = event.target;
+    let { value, selectionStart: caretIndex } = target;
+
+    const deleting = value.length < lastValue.length;
+    // If the deleted character is a space, remove the preceding character
+    // and adjust the caret index.
+    if (deleting && lastValue[caretIndex] === ' ') {
+      value = value.slice(0, caretIndex - 1) + value.slice(caretIndex);
+      caretIndex--;
+    }
+
+    const network = getCardNetwork(value);
+    let formattedValue = formatCardNumber(value, network);
+    if (deleting) {
+      formattedValue = formattedValue.trimEnd();
+    }
+
+    const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
+    caretIndex = getCaretIndex(formattedValue, digitsBeforeCaret);
+
+    // Move the caret past the newly added space.
+    if (!deleting && formattedValue[caretIndex] === ' ') {
+      caretIndex++;
+    }
+
+    target.value = formattedValue;
+    lastValue = formattedValue;
+    target.setSelectionRange(caretIndex, caretIndex);
+  };
+};
+
+const onCardExpirationDateInput = () => {
+  let lastValue = '';
+
+  return (event) => {
+    const target = event.target;
+    let { value, selectionStart: caretIndex } = target;
+
+    const deleting = value.length < lastValue.length;
+    if (!deleting && value.length === 1 && /[2-9]/.test(value)) {
+      value = `0${value}`;
+      caretIndex++;
+    }
+
+    // If the deleted character is not a digit, remove the second digit
+    // of the month.
+    if (deleting && !/\d/.test(lastValue[caretIndex])) {
+      value = value.slice(0, 1) + value.slice(caretIndex);
+      caretIndex = 1;
+    }
+
+    const formattedValue = formatCardExpirationDate(value);
+    const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
+    caretIndex = getCaretIndex(formattedValue, digitsBeforeCaret);
+
+    if (!deleting && formattedValue.slice(caretIndex, caretIndex + 3) === ' / ') {
+      caretIndex += 3;
+    }
+
+    target.value = formattedValue;
+    lastValue = formattedValue;
+    target.setSelectionRange(caretIndex, caretIndex);
+  };
+};
+
+const onCardSecurityCodeInput = (event) => {
   const target = event.target;
-  let { value, selectionStart: caretIndex } = target;
+  const { value, selectionStart: caretIndex } = target;
+  const network = getCardNetwork(cardNumberControl.value);
 
-  const deleting = value.length < lastValue.length;
-  // If the deleted character is a space, remove the preceding character
-  // and adjust the caret index.
-  if (deleting && lastValue[caretIndex] === ' ') {
-    value = value.slice(0, caretIndex - 1) + value.slice(caretIndex);
-    caretIndex--;
-  }
-
-  let formattedValue = formatCardNumber(value);
-  if (deleting) {
-    formattedValue = formattedValue.trimEnd();
-  }
-
-  const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
-  caretIndex = getCaretIndex(formattedValue, digitsBeforeCaret);
-
-  // Move the caret past the newly added space.
-  if (!deleting && formattedValue[caretIndex] === ' ') {
-    caretIndex++;
-  }
-
-  target.value = formattedValue;
-  lastValue = formattedValue;
+  target.value = formatCardSecurityCode(value, network);
   target.setSelectionRange(caretIndex, caretIndex);
-});
+};
 
-const cardExpiration = document.getElementById('cardExpiration');
-let lastDateValue = '';
-
-cardExpiration.addEventListener('input', (event) => {
-  const target = event.target;
-  let { value, selectionStart: caretIndex } = target;
-
-  const deleting = value.length < lastDateValue.length;
-  if (!deleting && value.length === 1 && /[2-9]/.test(value)) {
-    value = `0${value}`;
-    caretIndex++;
-  }
-
-  // If the deleted character is not a digit, remove the second digit
-  // of the month.
-  if (deleting && !/\d/.test(lastDateValue[caretIndex])) {
-    value = value.slice(0, 1) + value.slice(caretIndex);
-    caretIndex = 1;
-  }
-
-  const formattedValue = formatCardExpirationDate(value);
-  const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
-  caretIndex = getCaretIndex(formattedValue, digitsBeforeCaret);
-
-  if (!deleting && formattedValue.slice(caretIndex, caretIndex + 3) === ' / ') {
-    caretIndex += 3;
-  }
-
-  target.value = formattedValue;
-  lastDateValue = formattedValue;
-  target.setSelectionRange(caretIndex, caretIndex);
-});
+cardNumberControl.addEventListener('input', onCardNumberInput());
+cardExpirationDateControl.addEventListener('input', onCardExpirationDateInput());
+cardSecurityCodeControl.addEventListener('input', onCardSecurityCodeInput);
