@@ -13,7 +13,7 @@ const CARD_NETWORK_PATTERNS = {
  * @param {string} value
  * @returns {string}
  */
-const getDigitsOnly = (value) => value.replace(/\D/g, '');
+export const getDigitsOnly = (value) => value.replace(/\D/g, '');
 
 /**
  * @param {string} value
@@ -62,12 +62,42 @@ export const getCaretIndex = (formattedValue, digitsBeforeCaret) => {
 
 /**
  * @param {string} value
- * @param {'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown'} network
+ * @returns {boolean}
+ */
+export const cardNumberComplete = (value) => {
+  const sanitized = getDigitsOnly(value);
+  const expectedLength = getCardNetwork(sanitized) === 'amex' ? 15 : 16;
+
+  return sanitized.length === expectedLength;
+};
+
+/**
+ * @param {string} value
+ * @returns {boolean}
+ */
+export const validateLuhn = (value) => {
+  const sanitized = getDigitsOnly(value);
+  let sum = 0;
+  let even = false;
+  for (let index = sanitized.length - 1; index >= 0; index--) {
+    let digit = +sanitized[index];
+    if (even && (digit *= 2) > 9) {
+      digit -= 9;
+    }
+    sum += digit;
+    even = !even;
+  }
+
+  return sum % 10 === 0;
+};
+
+/**
+ * @param {string} value
  * @returns {string}
  */
-export const formatCardNumber = (value, network) => {
+export const formatCardNumber = (value) => {
   const sanitized = getDigitsOnly(value);
-  switch (network) {
+  switch (getCardNetwork(sanitized)) {
     case 'amex':
       return sanitized.replace(/^(\d{4})/, '$1 ').replace(/^(\d{4}\s\d{6})/, '$1 ').slice(0, 17);
     case 'visa':
