@@ -35,7 +35,8 @@ const validators = {
     }
 
     return '';
-  }
+  },
+  name: (value) => !value.trim() ? 'Name is required' : ''
 };
 
 const toggleError = (control, message = '') => {
@@ -95,6 +96,8 @@ const onNumberInput = () => {
   };
 };
 
+const onNameInput = (event) => toggleError(event.target);
+
 const onExpirationDateInput = () => {
   let lastValue = '';
 
@@ -137,6 +140,7 @@ const onSecurityCodeInput = (event) => {
 };
 
 numberControl.addEventListener('input', onNumberInput());
+nameControl.addEventListener('input', onNameInput);
 expirationDateControl.addEventListener('input', onExpirationDateInput());
 securityCodeControl.addEventListener('input', onSecurityCodeInput);
 
