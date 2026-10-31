@@ -11,25 +11,25 @@
     <main>
       <form class="form js-form" method="post" novalidate>
         <div class="form-field">
-          <label class="form-label" for="cardNumber">Card number</label>
-          <input id="cardNumber" class="form-control js-card-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="cardNumberError" />
-          <p id="cardNumberError" class="form-error-message" aria-live="polite"></p>
+          <label class="form-label" for="number">Card number</label>
+          <input id="number" class="form-control js-form-control js-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="numberError" />
+          <p id="numberError" class="form-error-message" aria-live="polite"></p>
         </div>
         <div class="form-field">
-          <label class="form-label" for="cardName">Name on card</label>
-          <input id="cardName" class="form-control js-card-name-control" name="name" type="text" autocomplete="cc-name" spellcheck="false" placeholder="John Doe" aria-required="true" aria-invalid="false" aria-describedby="cardNameError" />
-          <p id="cardNameError" class="form-error-message" aria-live="polite"></p>
+          <label class="form-label" for="name">Name on card</label>
+          <input id="name" class="form-control js-form-control js-name-control" name="name" type="text" autocomplete="cc-name" spellcheck="false" placeholder="John Doe" aria-required="true" aria-invalid="false" aria-describedby="nameError" />
+          <p id="nameError" class="form-error-message" aria-live="polite"></p>
         </div>
         <div class="form-row">
           <div class="form-field">
-            <label class="form-label" for="cardExpirationDate">Expiration date</label>
-            <input id="cardExpirationDate" class="form-control js-card-expiration-date-control" name="expirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-required="true" aria-invalid="false" aria-describedby="cardExpirationDateError" />
-            <p id="cardExpirationDateError" class="form-error-message" aria-live="polite"></p>
+            <label class="form-label" for="expirationDate">Expiration date</label>
+            <input id="expirationDate" class="form-control js-form-control js-expiration-date-control" name="expirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-required="true" aria-invalid="false" aria-describedby="expirationDateError" />
+            <p id="expirationDateError" class="form-error-message" aria-live="polite"></p>
           </div>
           <div class="form-field">
-            <label class="form-label" for="cardSecurityCode">Security code</label>
-            <input id="cardSecurityCode" class="form-control js-card-security-code-control" name="securityCode" type="text" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" placeholder="CVC" aria-required="true" aria-invalid="false" aria-describedby="cardSecurityCodeError" />
-            <p id="cardSecurityCodeError" class="form-error-message" aria-live="polite"></p>
+            <label class="form-label" for="securityCode">Security code</label>
+            <input id="securityCode" class="form-control js-form-control js-security-code-control" name="securityCode" type="text" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" placeholder="CVC" aria-required="true" aria-invalid="false" aria-describedby="securityCodeError" />
+            <p id="securityCodeError" class="form-error-message" aria-live="polite"></p>
           </div>
         </div>
         <button class="submit-button" type="submit">Submit</button>

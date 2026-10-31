@@ -64,7 +64,7 @@ export const getCaretIndex = (formattedValue, digitsBeforeCaret) => {
  * @param {string} value
  * @returns {boolean}
  */
-export const cardNumberComplete = (value) => {
+export const numberComplete = (value) => {
   const sanitized = getDigitsOnly(value);
   const expectedLength = getCardNetwork(sanitized) === 'amex' ? 15 : 16;
 
@@ -95,7 +95,7 @@ export const validateLuhn = (value) => {
  * @param {string} value
  * @returns {string}
  */
-export const formatCardNumber = (value) => {
+export const formatNumber = (value) => {
   const sanitized = getDigitsOnly(value);
   switch (getCardNetwork(sanitized)) {
     case 'amex':
@@ -112,11 +112,11 @@ export const formatCardNumber = (value) => {
  * @param {string} value
  * @returns {string}
  */
-export const formatCardExpirationDate = (value) => getDigitsOnly(value).replace(/^(\d{2})/, '$1 / ').slice(0, 7);
+export const formatExpirationDate = (value) => getDigitsOnly(value).replace(/^(\d{2})/, '$1 / ').slice(0, 7);
 
 /**
  * @param {string} value
  * @param {'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown'} network
  * @returns {string}
  */
-export const formatCardSecurityCode = (value, network) => getDigitsOnly(value).slice(0, network === 'amex' ? 4 : 3);
+export const formatSecurityCode = (value, network) => getDigitsOnly(value).slice(0, network === 'amex' ? 4 : 3);

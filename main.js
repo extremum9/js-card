@@ -1,21 +1,22 @@
 import {
-  cardNumberComplete,
   countDigitsBeforeCaret,
-  formatCardExpirationDate,
-  formatCardNumber,
-  formatCardSecurityCode,
+  formatExpirationDate,
+  formatNumber,
+  formatSecurityCode,
   getCardNetwork,
   getCaretIndex,
   getDigitsOnly,
+  numberComplete,
   validateLuhn
 } from './modules/utilities.js'
 
 const SELECTORS = {
   FORM: '.js-form',
-  CARD_NUMBER_CONTROL : '.js-card-number-control',
-  CARD_NAME_CONTROL: '.js-card-name-control',
-  CARD_EXPIRATION_DATE_CONTROL : '.js-card-expiration-date-control',
-  CARD_SECURITY_CODE_CONTROL : '.js-card-security-code-control',
+  FORM_CONTROL: '.js-form-control',
+  NUMBER_CONTROL : '.js-number-control',
+  NAME_CONTROL: '.js-name-control',
+  EXPIRATION_DATE_CONTROL : '.js-expiration-date-control',
+  SECURITY_CODE_CONTROL : '.js-security-code-control',
 };
 
 const validators = {
@@ -26,7 +27,7 @@ const validators = {
     if (getCardNetwork(value) === 'unknown') {
       return 'This card is not accepted';
     }
-    if (!cardNumberComplete(value)) {
+    if (!numberComplete(value)) {
       return 'Your card number is incomplete';
     }
     if (!validateLuhn(value)) {
@@ -39,22 +40,22 @@ const validators = {
 
 const toggleError = (control, message = '') => {
   const errorElement = document.getElementById(control.getAttribute('aria-describedby'));
-  const hasError = !!message;
+  const invalid = !!message;
   errorElement.textContent = message;
-  control.setAttribute('aria-invalid', `${hasError}`);
+  control.setAttribute('aria-invalid', `${invalid}`);
 
-  return hasError;
+  return invalid;
 };
 
-const validateControl = (control) => toggleError(control, validators[control.name](control.value));
+const validateControl = (control) => toggleError(control, validators[control.id](control.value));
 
 const formElement = document.querySelector(SELECTORS.FORM);
-const cardNumberControl = formElement.querySelector(SELECTORS.CARD_NUMBER_CONTROL);
-const cardNameControl = formElement.querySelector(SELECTORS.CARD_NAME_CONTROL);
-const cardExpirationDateControl = formElement.querySelector(SELECTORS.CARD_EXPIRATION_DATE_CONTROL);
-const cardSecurityCodeControl = formElement.querySelector(SELECTORS.CARD_SECURITY_CODE_CONTROL);
+const numberControl = formElement.querySelector(SELECTORS.NUMBER_CONTROL);
+const nameControl = formElement.querySelector(SELECTORS.NAME_CONTROL);
+const expirationDateControl = formElement.querySelector(SELECTORS.EXPIRATION_DATE_CONTROL);
+const securityCodeControl = formElement.querySelector(SELECTORS.SECURITY_CODE_CONTROL);
 
-const onCardNumberInput = () => {
+const onNumberInput = () => {
   let lastValue = '';
 
   return (event) => {
@@ -69,7 +70,7 @@ const onCardNumberInput = () => {
       caretIndex--;
     }
 
-    const formattedValue = formatCardNumber(value);
+    const formattedValue = formatNumber(value);
     const finalValue = deleting ? formattedValue.trimEnd() : formattedValue;
 
     const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
@@ -83,7 +84,7 @@ const onCardNumberInput = () => {
     target.setSelectionRange(caretIndex, caretIndex);
 
     if (lastValue !== finalValue) {
-      if (cardNumberComplete(finalValue)) {
+      if (numberComplete(finalValue)) {
         validateControl(target);
       } else {
         toggleError(target);
@@ -94,7 +95,7 @@ const onCardNumberInput = () => {
   };
 };
 
-const onCardExpirationDateInput = () => {
+const onExpirationDateInput = () => {
   let lastValue = '';
 
   return (event) => {
@@ -114,7 +115,7 @@ const onCardExpirationDateInput = () => {
       caretIndex = 1;
     }
 
-    const formattedValue = formatCardExpirationDate(value);
+    const formattedValue = formatExpirationDate(value);
     const digitsBeforeCaret = countDigitsBeforeCaret(value, caretIndex);
     caretIndex = getCaretIndex(formattedValue, digitsBeforeCaret);
 
@@ -128,25 +129,25 @@ const onCardExpirationDateInput = () => {
   };
 };
 
-const onCardSecurityCodeInput = (event) => {
+const onSecurityCodeInput = (event) => {
   const target = event.target;
   const { value, selectionStart: caretIndex } = target;
-  const network = getCardNetwork(cardNumberControl.value);
-
-  target.value = formatCardSecurityCode(value, network);
+  target.value = formatSecurityCode(value, getCardNetwork(numberControl.value));
   target.setSelectionRange(caretIndex, caretIndex);
 };
 
-cardNumberControl.addEventListener('input', onCardNumberInput());
-cardExpirationDateControl.addEventListener('input', onCardExpirationDateInput());
-cardSecurityCodeControl.addEventListener('input', onCardSecurityCodeInput);
+numberControl.addEventListener('input', onNumberInput());
+expirationDateControl.addEventListener('input', onExpirationDateInput());
+securityCodeControl.addEventListener('input', onSecurityCodeInput);
 
-const formControls = [cardNumberControl, cardNameControl, cardExpirationDateControl, cardSecurityCodeControl];
-formControls.forEach((control) => control.addEventListener('blur', () => {
-  if (control.value.length) {
-    validateControl(control);
+formElement.addEventListener('focusout', (event) => {
+  const target = event.target;
+  if (target.matches(SELECTORS.FORM_CONTROL) && target.value.length) {
+    validateControl(target);
   }
-}));
+});
+
+const formControls = [numberControl, nameControl, expirationDateControl, securityCodeControl];
 
 formElement.addEventListener('submit', (event) => {
   event.preventDefault();
