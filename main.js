@@ -41,7 +41,7 @@ const validators = {
   },
   name: (value) => !value.trim() ? 'Name is required' : '',
   expirationDate: (value) => {
-    const sanitized = getDigitsOnly(value); // 0412
+    const sanitized = getDigitsOnly(value);
     if (!sanitized) {
       return 'Expiration date is required';
     }
@@ -62,6 +62,18 @@ const validators = {
     const currentMonth = currentDate.getMonth() + 1;
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
       return 'Your card has expired';
+    }
+
+    return '';
+  },
+  securityCode: (value) => {
+    const sanitized = getDigitsOnly(value);
+    if (!sanitized) {
+      return 'Security code is required';
+    }
+    const expectedLength = getCardNetwork(numberControl.value) === 'amex' ? 4 : 3;
+    if (sanitized.length !== expectedLength) {
+      return `Your security code must be ${expectedLength} digits`;
     }
 
     return '';
@@ -119,6 +131,9 @@ const onNumberInput = () => {
       } else {
         toggleError(target);
       }
+      if (securityCodeControl.value) {
+        validateControl(securityCodeControl);
+      }
     }
 
     lastValue = finalValue;
@@ -170,17 +185,26 @@ const onExpirationDateInput = () => {
   };
 };
 
-const onSecurityCodeInput = (event) => {
-  const target = event.target;
-  const { value, selectionStart: caretIndex } = target;
-  target.value = formatSecurityCode(value, getCardNetwork(numberControl.value));
-  target.setSelectionRange(caretIndex, caretIndex);
+const onSecurityCodeInput = () => {
+  let lastValue = '';
+
+  return (event) => {
+    const target = event.target;
+    const { value, selectionStart: caretIndex } = target;
+    const formattedValue = formatSecurityCode(value, getCardNetwork(numberControl.value));
+    target.value = formattedValue;
+    target.setSelectionRange(caretIndex, caretIndex);
+    if (lastValue !== formattedValue) {
+      toggleError(target);
+    }
+    lastValue = formattedValue;
+  }
 };
 
 numberControl.addEventListener('input', onNumberInput());
 nameControl.addEventListener('input', onNameInput);
 expirationDateControl.addEventListener('input', onExpirationDateInput());
-securityCodeControl.addEventListener('input', onSecurityCodeInput);
+securityCodeControl.addEventListener('input', onSecurityCodeInput());
 
 formElement.addEventListener('focusout', (event) => {
   const target = event.target;
