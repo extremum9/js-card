@@ -1,5 +1,6 @@
 import {
   countDigitsBeforeCaret,
+  expirationDateComplete,
   formatExpirationDate,
   formatNumber,
   formatSecurityCode,
@@ -9,6 +10,8 @@ import {
   numberComplete,
   validateLuhn
 } from './modules/utilities.js'
+
+const EXPIRATION_YEAR_THRESHOLD = 10;
 
 const SELECTORS = {
   FORM: '.js-form',
@@ -36,7 +39,33 @@ const validators = {
 
     return '';
   },
-  name: (value) => !value.trim() ? 'Name is required' : ''
+  name: (value) => !value.trim() ? 'Name is required' : '',
+  expirationDate: (value) => {
+    const sanitized = getDigitsOnly(value); // 0412
+    if (!sanitized) {
+      return 'Expiration date is required';
+    }
+    if (!expirationDateComplete(sanitized)) {
+      return 'Your expiration date is incomplete';
+    }
+    const month = +sanitized.slice(0, 2);
+    if (month < 1 || month > 12) {
+      return 'Month is invalid';
+    }
+    const year = +sanitized.slice(2, 4) + 2000;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const maxExpirationYear = currentYear + EXPIRATION_YEAR_THRESHOLD;
+    if (year > maxExpirationYear) {
+      return 'Year is invalid';
+    }
+    const currentMonth = currentDate.getMonth() + 1;
+    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+      return 'Your card has expired';
+    }
+
+    return '';
+  }
 };
 
 const toggleError = (control, message = '') => {
@@ -127,8 +156,17 @@ const onExpirationDateInput = () => {
     }
 
     target.value = formattedValue;
-    lastValue = formattedValue;
     target.setSelectionRange(caretIndex, caretIndex);
+
+    if (lastValue !== formattedValue) {
+      if (expirationDateComplete(formattedValue)) {
+        validateControl(target);
+      } else {
+        toggleError(target);
+      }
+    }
+
+    lastValue = formattedValue;
   };
 };
 

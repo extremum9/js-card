@@ -75,6 +75,12 @@ export const numberComplete = (value) => {
  * @param {string} value
  * @returns {boolean}
  */
+export const expirationDateComplete = (value) => getDigitsOnly(value).length === 4;
+
+/**
+ * @param {string} value
+ * @returns {boolean}
+ */
 export const validateLuhn = (value) => {
   const sanitized = getDigitsOnly(value);
   let sum = 0;
