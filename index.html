@@ -12,7 +12,7 @@
       <form class="form js-form" method="post" novalidate>
         <div class="form-field">
           <label class="form-label" for="number">Card number</label>
-          <input id="number" class="form-control js-form-control js-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="numberError" />
+          <input id="number" class="form-control js-form-control js-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="numberError" data-next="#name" />
           <p id="numberError" class="form-error-message" aria-live="polite"></p>
         </div>
         <div class="form-field">
@@ -23,7 +23,7 @@
         <div class="form-row">
           <div class="form-field">
             <label class="form-label" for="expirationDate">Expiration date</label>
-            <input id="expirationDate" class="form-control js-form-control js-expiration-date-control" name="expirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-required="true" aria-invalid="false" aria-describedby="expirationDateError" />
+            <input id="expirationDate" class="form-control js-form-control js-expiration-date-control" name="expirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-required="true" aria-invalid="false" aria-describedby="expirationDateError" data-next="#securityCode" />
             <p id="expirationDateError" class="form-error-message" aria-live="polite"></p>
           </div>
           <div class="form-field">
@@ -32,7 +32,7 @@
             <p id="securityCodeError" class="form-error-message" aria-live="polite"></p>
           </div>
         </div>
-        <button class="submit-button" type="submit">Submit</button>
+        <button id="submitButton" class="submit-button" type="submit">Submit</button>
       </form>
     </main>
   </body>

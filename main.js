@@ -91,6 +91,13 @@ const toggleError = (control, message = '') => {
 
 const validateControl = (control) => toggleError(control, validators[control.id](control.value));
 
+const tabToNextControl = (control) => {
+  const nextElementId = control.dataset.next;
+  if (nextElementId) {
+    formElement.querySelector(nextElementId).focus();
+  }
+};
+
 const formElement = document.querySelector(SELECTORS.FORM);
 const numberControl = formElement.querySelector(SELECTORS.NUMBER_CONTROL);
 const nameControl = formElement.querySelector(SELECTORS.NAME_CONTROL);
@@ -127,7 +134,10 @@ const onNumberInput = () => {
 
     if (lastValue !== finalValue) {
       if (numberComplete(finalValue)) {
-        validateControl(target);
+        const error = validateControl(target);
+        if (!error) {
+          tabToNextControl(target);
+        }
       } else {
         toggleError(target);
       }
@@ -175,7 +185,10 @@ const onExpirationDateInput = () => {
 
     if (lastValue !== formattedValue) {
       if (expirationDateComplete(formattedValue)) {
-        validateControl(target);
+        const error = validateControl(target);
+        if (!error) {
+          tabToNextControl(target);
+        }
       } else {
         toggleError(target);
       }
