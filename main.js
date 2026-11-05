@@ -15,12 +15,18 @@ const EXPIRATION_YEAR_THRESHOLD = 10;
 
 const SELECTORS = {
   FORM: '.js-form',
+  FORM_FIELD: '.js-form-field',
   FORM_CONTROL: '.js-form-control',
+  FORM_ERROR_MESSAGE: '.js-form-error-message',
   NUMBER_CONTROL : '.js-number-control',
   NAME_CONTROL: '.js-name-control',
   EXPIRATION_DATE_CONTROL : '.js-expiration-date-control',
   SECURITY_CODE_CONTROL : '.js-security-code-control',
 };
+
+const STATE_CLASSES = {
+  INVALID: 'invalid'
+}
 
 const validators = {
   number: (value) => {
@@ -81,10 +87,12 @@ const validators = {
 };
 
 const toggleError = (control, message = '') => {
-  const errorElement = document.getElementById(control.getAttribute('aria-describedby'));
+  const fieldElement = control.closest(SELECTORS.FORM_FIELD);
+  const errorElement = fieldElement.querySelector(SELECTORS.FORM_ERROR_MESSAGE);
   const invalid = !!message;
   errorElement.textContent = message;
   control.setAttribute('aria-invalid', `${invalid}`);
+  fieldElement.classList.toggle(STATE_CLASSES.INVALID, invalid);
 
   return invalid;
 };

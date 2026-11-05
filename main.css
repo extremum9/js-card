@@ -146,7 +146,6 @@ textarea {
   }
 }
 
-/* Base */
 :root {
   --background-color: #0b0e15;
   --panel-color: #131825;
@@ -175,6 +174,18 @@ main {
   flex-grow: 1;
 }
 
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .form {
   width: 100%;
   max-width: 420px;
@@ -196,6 +207,19 @@ main {
   &:focus-within {
     .form-label {
       color: var(--text-color);
+    }
+  }
+
+  &.invalid {
+    .form-control {
+      border-color: var(--error-color);
+      &:focus {
+        box-shadow: 0 0 0 4px rgba(255, 117, 133, 0.18);
+      }
+    }
+
+    .form-error-message {
+      margin-block-start: 6px;
     }
   }
 }
@@ -222,17 +246,17 @@ main {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 4px rgba(154, 168, 255, 0.16);
   }
+}
 
-  &[aria-invalid="true"] {
-    border-color: var(--error-color);
-    &:focus {
-      box-shadow: 0 0 0 4px rgba(255, 117, 133, 0.18);
-    }
+.form-number-control-group {
+  position: relative;
+}
 
-    & + .form-error-message {
-      margin-block-start: 6px;
-    }
-  }
+.card-network-icons {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  translate: 0 -50%;
 }
 
 .form-error-message {
