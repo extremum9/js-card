@@ -22,6 +22,7 @@ const SELECTORS = {
   NAME_CONTROL: '.js-name-control',
   EXPIRATION_DATE_CONTROL : '.js-expiration-date-control',
   SECURITY_CODE_CONTROL : '.js-security-code-control',
+  CARD_NETWORK_ICONS: '.js-card-network-icons'
 };
 
 const STATE_CLASSES = {
@@ -111,6 +112,7 @@ const numberControl = formElement.querySelector(SELECTORS.NUMBER_CONTROL);
 const nameControl = formElement.querySelector(SELECTORS.NAME_CONTROL);
 const expirationDateControl = formElement.querySelector(SELECTORS.EXPIRATION_DATE_CONTROL);
 const securityCodeControl = formElement.querySelector(SELECTORS.SECURITY_CODE_CONTROL);
+const cardNetworkIconsElement = formElement.querySelector(SELECTORS.CARD_NETWORK_ICONS);
 
 const onNumberInput = () => {
   let lastValue = '';
@@ -139,6 +141,8 @@ const onNumberInput = () => {
 
     target.value = finalValue;
     target.setSelectionRange(caretIndex, caretIndex);
+
+    cardNetworkIconsElement.dataset.currentNetwork = getCardNetwork(finalValue);
 
     if (lastValue !== finalValue) {
       if (numberComplete(finalValue)) {
