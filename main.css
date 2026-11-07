@@ -219,7 +219,9 @@ main {
     }
 
     .form-error-message {
-      margin-block-start: 6px;
+      max-height: 50px;
+      padding-block-start: 6px;
+      opacity: 1;
     }
   }
 }
@@ -286,13 +288,14 @@ main {
   display: flex;
   align-items: start;
   column-gap: 6px;
+  max-height: 0;
+  padding-block-start: 0;
+  overflow: hidden;
+  opacity: 0;
   font-size: 14px;
   line-height: 1.4;
   color: var(--error-color);
-  &:empty::before {
-    display: none;
-  }
-
+  transition: max-height 0.2s ease-in-out, padding-block-start 0.2s ease-in-out, opacity 0.2s ease-in-out;
   &::before {
     content: "!";
     flex-shrink: 0;

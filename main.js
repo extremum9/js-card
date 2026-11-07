@@ -87,11 +87,19 @@ const validators = {
   }
 };
 
-const toggleError = (control, message = '') => {
+const toggleError = (control, message) => {
   const fieldElement = control.closest(SELECTORS.FORM_FIELD);
   const errorElement = fieldElement.querySelector(SELECTORS.FORM_ERROR_MESSAGE);
   const invalid = !!message;
-  errorElement.textContent = message;
+  if (invalid) {
+    errorElement.textContent = message;
+  } else {
+    errorElement.addEventListener('transitionend', () => {
+      if (!fieldElement.classList.contains(STATE_CLASSES.INVALID)) {
+        errorElement.textContent = '';
+      }
+    }, { once: true });
+  }
   control.setAttribute('aria-invalid', `${invalid}`);
   fieldElement.classList.toggle(STATE_CLASSES.INVALID, invalid);
 
