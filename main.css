@@ -250,25 +250,16 @@ main {
   }
 }
 
-.form-number-control-group {
+.form-number-control-wrap {
   position: relative;
 }
 
-.card-network-icons {
+.card-network-icon {
   position: absolute;
   top: 50%;
   right: 10px;
   translate: 0 -50%;
-  &:not([data-current-network="unknown"]) svg {
-    display: none;
-  }
-
-  &[data-current-network="visa"] svg[data-network="visa"],
-  &[data-current-network="mastercard"] svg[data-network="mastercard"],
-  &[data-current-network="discover"] svg[data-network="discover"],
-  &[data-current-network="amex"] svg[data-network="amex"]
-  {
-    display: block;
+  &.pop-in {
     animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
 }
@@ -310,6 +301,14 @@ main {
     border-radius: 50%;
     background-color: var(--error-color);
   }
+}
+
+.supported-cards-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+  margin-block-end: 18px;
 }
 
 .submit-button {

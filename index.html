@@ -10,39 +10,46 @@
   <body>
     <main>
       <form class="form js-form" method="post" novalidate>
+        <div class="supported-cards-icons">
+          <p id="supportedCards" class="sr-only">Supported cards are Visa, Mastercard, Discover and American Express.</p>
+          <svg width="60" height="38" aria-hidden="true">
+            <use href="sprite.svg#visa"></use>
+          </svg>
+          <svg width="60" height="38" aria-hidden="true">
+            <use href="sprite.svg#mastercard"></use>
+          </svg>
+          <svg width="60" height="38" aria-hidden="true">
+            <use href="sprite.svg#discover"></use>
+          </svg>
+          <svg width="60" height="38" aria-hidden="true">
+            <use href="sprite.svg#amex"></use>
+          </svg>
+        </div>
+
         <div class="form-field js-form-field">
           <label class="form-label" for="number">Card number</label>
-          <div class="form-number-control-group">
-            <input id="number" class="form-control js-form-control js-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="acceptedCards numberError" data-next="#name" />
-            <div class="card-network-icons js-card-network-icons" data-current-network="unknown">
-              <p id="acceptedCards" class="sr-only">Accepted cards are Visa, Mastercard, Discover and American Express.</p>
-              <svg width="38" height="24" aria-hidden="true" data-network="visa">
-                <use href="sprite.svg#visa"></use>
-              </svg>
-              <svg width="38" height="24" aria-hidden="true" data-network="mastercard">
-                <use href="sprite.svg#mastercard"></use>
-              </svg>
-              <svg width="38" height="24" aria-hidden="true" data-network="discover">
-                <use href="sprite.svg#discover"></use>
-              </svg>
-              <svg width="38" height="24" aria-hidden="true" data-network="amex">
-                <use href="sprite.svg#amex"></use>
-              </svg>
-            </div>
+          <div class="form-number-control-wrap">
+            <input id="number" class="form-control js-form-control js-number-control" name="number" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" placeholder="1234 1234 1234 1234" aria-required="true" aria-invalid="false" aria-describedby="supportedCards numberError" data-next="#name" />
+            <svg class="card-network-icon js-card-network-icon" width="38" height="24" aria-hidden="true">
+              <use href="sprite.svg#unknown"></use>
+            </svg>
           </div>
           <p id="numberError" class="form-error-message js-form-error-message" aria-live="polite"></p>
         </div>
+
         <div class="form-field js-form-field">
           <label class="form-label" for="name">Name on card</label>
           <input id="name" class="form-control js-form-control js-name-control" name="name" type="text" autocomplete="cc-name" spellcheck="false" placeholder="John Doe" aria-required="true" aria-invalid="false" aria-describedby="nameError" />
           <p id="nameError" class="form-error-message js-form-error-message" aria-live="polite"></p>
         </div>
+
         <div class="form-row">
           <div class="form-field js-form-field">
             <label class="form-label" for="expirationDate">Expiration date</label>
             <input id="expirationDate" class="form-control js-form-control js-expiration-date-control" name="expirationDate" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" placeholder="MM / YY" aria-required="true" aria-invalid="false" aria-describedby="expirationDateError" data-next="#securityCode" />
             <p id="expirationDateError" class="form-error-message js-form-error-message" aria-live="polite"></p>
           </div>
+
           <div class="form-field js-form-field">
             <label class="form-label" for="securityCode">Security code</label>
             <input id="securityCode" class="form-control js-form-control js-security-code-control" name="securityCode" type="text" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" placeholder="CVC" aria-required="true" aria-invalid="false" aria-describedby="securityCodeError" />

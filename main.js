@@ -22,12 +22,20 @@ const SELECTORS = {
   NAME_CONTROL: '.js-name-control',
   EXPIRATION_DATE_CONTROL : '.js-expiration-date-control',
   SECURITY_CODE_CONTROL : '.js-security-code-control',
-  CARD_NETWORK_ICONS: '.js-card-network-icons'
+  CARD_NETWORK_ICON: '.js-card-network-icon'
 };
 
 const STATE_CLASSES = {
-  INVALID: 'invalid'
+  INVALID: 'invalid',
+  POP_IN: 'pop-in'
 }
+const formElement = document.querySelector(SELECTORS.FORM);
+const numberControl = formElement.querySelector(SELECTORS.NUMBER_CONTROL);
+const nameControl = formElement.querySelector(SELECTORS.NAME_CONTROL);
+const expirationDateControl = formElement.querySelector(SELECTORS.EXPIRATION_DATE_CONTROL);
+const securityCodeControl = formElement.querySelector(SELECTORS.SECURITY_CODE_CONTROL);
+const cardNetworkIconElement = formElement.querySelector(SELECTORS.CARD_NETWORK_ICON);
+const cardNetworkUseElement = cardNetworkIconElement.querySelector('use');
 
 const validators = {
   number: (value) => {
@@ -115,12 +123,19 @@ const tabToNextControl = (control) => {
   }
 };
 
-const formElement = document.querySelector(SELECTORS.FORM);
-const numberControl = formElement.querySelector(SELECTORS.NUMBER_CONTROL);
-const nameControl = formElement.querySelector(SELECTORS.NAME_CONTROL);
-const expirationDateControl = formElement.querySelector(SELECTORS.EXPIRATION_DATE_CONTROL);
-const securityCodeControl = formElement.querySelector(SELECTORS.SECURITY_CODE_CONTROL);
-const cardNetworkIconsElement = formElement.querySelector(SELECTORS.CARD_NETWORK_ICONS);
+const updateCardNetworkIcon = (number) => {
+  const network = getCardNetwork(number);
+  const currentNetwork = cardNetworkUseElement.getAttribute('href').split('#')[1];
+  if (network !== currentNetwork) {
+    cardNetworkUseElement.setAttribute('href', `sprite.svg#${network}`);
+    cardNetworkIconElement.classList.remove(STATE_CLASSES.POP_IN);
+    cardNetworkIconElement.offsetWidth;
+    cardNetworkIconElement.classList.add(STATE_CLASSES.POP_IN);
+    cardNetworkIconElement.addEventListener('animationend', () => {
+      cardNetworkIconElement.classList.remove(STATE_CLASSES.POP_IN);
+    }, { once: true });
+  }
+};
 
 const onNumberInput = () => {
   let lastValue = '';
@@ -150,7 +165,7 @@ const onNumberInput = () => {
     target.value = finalValue;
     target.setSelectionRange(caretIndex, caretIndex);
 
-    cardNetworkIconsElement.dataset.currentNetwork = getCardNetwork(finalValue);
+    updateCardNetworkIcon(finalValue);
 
     if (lastValue !== finalValue) {
       if (numberComplete(finalValue)) {
